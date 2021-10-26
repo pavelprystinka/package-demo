@@ -1,0 +1,59 @@
+apply plugin: 'maven-publish'
+
+def LIB_GROUP_ID = 'com.group.module'
+def LIB_ARTIFACT_ID = 'final'
+def LIB_VERSION = '1.0.2'
+
+
+task javadoc(type: Javadoc) {
+    failOnError false
+    source = android.sourceSets.main.java.sourceFiles
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+    archiveClassifier.set("javadoc")
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+}
+
+publishing {
+    repositories {
+        maven {
+            name = 'github'
+            url = 'https://maven.pkg.github.com/pavelprystinka/package-demo'
+            credentials {
+                username 'pavelprystinka'
+                password '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'
+            }
+        }
+        maven {
+            name = 'localDirectory'
+            url = "file://${buildDir}/publish"
+        }
+    }
+    publications {
+        release(MavenPublication) {
+            groupId LIB_GROUP_ID
+            artifactId LIB_ARTIFACT_ID
+            version LIB_VERSION
+            artifact("$buildDir/outputs/aar/packagetestlibrary-release.aar")
+            artifact javadocJar
+            artifact sourcesJar
+
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                configurations.implementation.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                }
+            }
+        }
+    }
+}
