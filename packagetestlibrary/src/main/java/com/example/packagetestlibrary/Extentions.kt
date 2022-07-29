@@ -10,7 +10,12 @@ val Zoo<AnimalInterface>.employeeCount: Int
         return this.employees.size
     }
 
-val String.ToUpper: String
-        get() {
-            return this.toUpperCase()
-        }
+val String.size: Int
+    get(){
+        return this.length
+    }
+
+fun String.ToUpper(): String {
+    return this.toUpperCase()
+}
+

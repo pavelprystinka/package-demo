@@ -8,10 +8,16 @@ import com.example.packagetestlibrary.model.EmployeeInterface
 import com.example.packagetestlibrary.model.Tiger
 
 class City<T: EmployeeInterface<List<String>>> : CityInterface<Zoo<Tiger>> {
+
+    private var _name: String? = null
+    internal var internalName: String? = null
+
+
     val name: String? = null
 
     open var age: Int = 5
     var size: CitySize = CitySize.MEDIUM
+
 
 
     class CityBlock(val name: String) {
@@ -27,6 +33,10 @@ class City<T: EmployeeInterface<List<String>>> : CityInterface<Zoo<Tiger>> {
                 return Earth.cities.size
             }
     }
+
+    private fun privateFun() { }
+
+    internal fun internalFun() { }
 }
 
 interface CityInterface<T: ZooInterface> {
